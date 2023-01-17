@@ -1,0 +1,68 @@
+{
+  "name": "calendar-overview",
+  "productName": "Calendar Overview",
+  "description": "An overview of your calendars",
+  "author": "jm@ponymakers.com",
+  "license": "MIT",
+  "version": "0.3.0",
+  "main": "dist/index.js",
+  "scripts": {
+    "nodemon": "nodemon",
+    "start": "npm run compile && electron .",
+    "svelte:dev": "cd svelte && npm run dev",
+    "svelte:build": "cd svelte && npm run build",
+    "compile": "tsc",
+    "out:win": "export NODE_ENV=production &&npm run svelte:build && npm run compile && electron-builder build --win --publish never",
+    "publish:win": "electron-builder build --win --publish always",
+    "check-updates": "npx npm-check-updates",
+    "check-updates:minor": "npx npm-check-updates --target minor",
+    "check-updates:patch": "npx npm-check-updates --target patch"
+  },
+  "devDependencies": {
+    "@types/node": "^18.7.18",
+    "concurrently": "^7.4.0",
+    "electron": "^20.1.4",
+    "electron-builder": "^23.3.3",
+    "nodemon": "^2.0.20",
+    "typescript": "^4.8.3"
+  },
+  "dependencies": {
+    "@el3um4s/ipc-for-electron": "^1.0.7",
+    "@el3um4s/ipc-for-electron-system-info": "^2.0.4",
+    "electron-reload": "^1.5.0",
+    "electron-serve": "^1.1.0",
+    "electron-shared-state": "^1.0.0",
+    "electron-updater": "^5.2.1",
+    "immer": "^9.0.18"
+  },
+  "build": {
+    "appId": "clock-master",
+    "directories": {
+      "output": "out"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "JMPothelune",
+        "repo": "CalendarOverview"
+      }
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "installerIcon": "icon.ico",
+      "uninstallerIcon": "icon.ico",
+      "uninstallDisplayName": "Calendar Overview",
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Calendar Overview"
+    }
+  }
+}
