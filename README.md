@@ -1,6 +1,6 @@
-# Clock App
+# Calendar Overview
 
-This is a simple clock app made with Svelte, Electron and TypeScript.
+This is a simple calendar app to help you to manage your time.
 
 ## Get Started
 

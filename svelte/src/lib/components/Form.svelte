@@ -1,8 +1,7 @@
 <script lang="ts">
-	import type { ClockSettings } from "$lib/store/store";
 	import sharedStore from "$lib/store/store";
-	import { LightSwitch, SlideToggle, type ModalSettings } from "@skeletonlabs/skeleton";
-  import { modalStore } from '@skeletonlabs/skeleton';
+	import { SlideToggle } from "@skeletonlabs/skeleton";
+
 	import { onMount } from "svelte";
 
   let date = new Date();
