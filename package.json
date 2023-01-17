@@ -33,7 +33,8 @@
     "electron-serve": "^1.1.0",
     "electron-shared-state": "^1.0.0",
     "electron-updater": "^5.2.1",
-    "immer": "^9.0.18"
+    "immer": "^9.0.18",
+    "node-ical": "^0.15.3"
   },
   "build": {
     "appId": "calendar-overview",

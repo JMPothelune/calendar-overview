@@ -41,6 +41,7 @@
 	"dependencies": {
 		"@el3um4s/renderer-for-electron-system-info": "^2.0.1",
 		"@fontsource/fira-mono": "^4.5.9",
+		"dayjs": "^1.11.7",
 		"electron-shared-state": "^1.0.0",
 		"immer": "^9.0.18"
 	}

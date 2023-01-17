@@ -1,6 +1,14 @@
 import { createSharedStore } from './electronSharedState';
 import { writable} from 'svelte/store';
 
+export type CalendarEvent = {
+  start: Date;
+  end: Date;
+  summary: string;
+  description: string;
+  location: string;
+  url: string;
+}
 
 const initialValue = {
   initializated: false,
@@ -9,6 +17,7 @@ const initialValue = {
     showWindow: false,
     alwaysVisible: false,
   },
+  calendarEvents: [] as CalendarEvent[],
 }
 
 type SharedState = typeof initialValue;

@@ -1,4 +1,4 @@
-import { app, BrowserWindow } from "electron";
+import { app, BrowserWindow, BrowserWindowConstructorOptions } from "electron";
 import path from "path";
 import EventEmitter from "events";
 import ConfigureDev from "../configureDev";
@@ -15,7 +15,7 @@ const defaultSettings = {
   secondaryScreen: false,
 };
 
-export type WindowSettings = typeof defaultSettings
+export type WindowSettings = typeof defaultSettings & BrowserWindowConstructorOptions;
 
 class WindowController {
   window!: BrowserWindow;

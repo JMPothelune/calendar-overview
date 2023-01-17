@@ -1,3 +1,4 @@
+import { CalendarEvent } from '../models/calendarEvent';
 import { createSharedStore } from './electronSharedState';
 
 const calendarSettings = {
@@ -10,6 +11,7 @@ const calendarSettings = {
 const initialValue = {
   initializated: true,
   calendarSettings,
+  calendarEvents: [] as CalendarEvent[],
 }
 
 const sharedStore = createSharedStore(initialValue);

@@ -9,6 +9,7 @@
 let calendarSettings = {
   isLightMode: false,
   showWindow: false,
+  alwaysVisible: false,
 };
 
 

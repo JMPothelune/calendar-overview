@@ -3,6 +3,7 @@ import ConfigureDev from "./configureDev";
 import WindowController, { WindowSettings } from "./windows/windowController";
 import sharedStore from "./store/sharedStore";
 import path from "path";
+import CalendarManager from "./managers/calendarManager";
 
 const mainWindowSettings:Partial<WindowSettings> = {
   title: "Settings",
@@ -17,22 +18,27 @@ const calendarWindowSettings:Partial<WindowSettings> = {
   page: "calendar",
   show: false,
   secondaryScreen: true,
+  frame: false,
 };
 
 class App{
   configDev: ConfigureDev;
   mainWindow: WindowController | null = null;
   calendarWindow: WindowController | null = null;
+  calendarManager: CalendarManager;
   tray: Tray | null = null;
 
   constructor(configDev: ConfigureDev){
     this.configDev = configDev;
+    this.calendarManager = new CalendarManager();
+    this.calendarManager.start();
   }
 
   start(){
     
     // Prevent multiple instances of the app
     const gotTheLock = app.requestSingleInstanceLock()
+
 
     if (!gotTheLock) {
       app.quit()
@@ -50,7 +56,7 @@ class App{
     if(this.configDev.isInProduction){
       Menu.setApplicationMenu(null)
     }
-    
+
     sharedStore.subscribe((state, description)=>{
       console.log("State changed", description);
 
