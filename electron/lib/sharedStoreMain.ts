@@ -1,8 +1,18 @@
 import { ipcMain, IpcMainEvent, IpcMainInvokeEvent, webContents } from "electron";
+import ElectronStore from "electron-store";
 
-
-export function createSharedStore<T>( storeName: string, initialState:T ) {
+export function createSharedStore<T>( storeName: string, initialState:T, options = { persist: true } ) {
   let internalState = initialState;
+  const persistStore = new ElectronStore<{state:T}>({ name: storeName })
+  if(options.persist) {
+    internalState = persistStore.get("state", initialState);
+  }
+
+  function persist() {
+    if(options.persist) {
+      persistStore.set("state", internalState);
+    }
+  }
 
   const ipcModule = ipcMain;
   const connectedRenderers = new Set<number>();
@@ -22,17 +32,21 @@ export function createSharedStore<T>( storeName: string, initialState:T ) {
     console.log("UPDATE", storeName,  newState);
     connectedRenderers.add(event.sender.id);
     
-    if(internalState === newState) return; // TODO: compare deeply
+    applyChange(newState);
+  });
 
+  function applyChange(newState: T) {
+    if(internalState === newState) return; // TODO: compare deeply
     const previousState = internalState;
     internalState = newState
+    persist();
 
     broadcastChange();
 
     for (let listener of listeners) {
       listener(newState, previousState);
     }
-  });
+  }
 
   function broadcastChange() {
     for (let id of connectedRenderers) {
@@ -43,27 +57,14 @@ export function createSharedStore<T>( storeName: string, initialState:T ) {
     }
   }
 
-  function update(updater: (previousState: T) => T) {
-    const newState = updater(internalState);
-    const previousState = internalState;
-    
-    internalState = newState;
-    broadcastChange();
-
-    for (let listener of listeners) {
-      listener(newState, previousState);
-    }
-
+  function set(newState: T) {
+    applyChange(newState);
   }
 
-  function set(newState: T) {
-    const previousState = internalState;
-    internalState = newState;
-    broadcastChange();
 
-    for (let listener of listeners) {
-      listener(newState, previousState);
-    }
+  function update(updater: (previousState: T) => T) {
+    const newState = updater(internalState);
+    set(newState);
   }
 
   function getState() {
