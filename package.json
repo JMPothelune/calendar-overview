@@ -14,6 +14,7 @@
     "compile": "tsc",
     "out:win": "export NODE_ENV=production &&npm run svelte:build && npm run compile && electron-builder build --win --publish never",
     "publish:win": "electron-builder build --win --publish always",
+    "out:linux": "export NODE_ENV=production &&npm run svelte:build && npm run compile && electron-builder build --linux --publish never",
     "check-updates": "npx npm-check-updates",
     "check-updates:minor": "npx npm-check-updates --target minor",
     "check-updates:patch": "npx npm-check-updates --target patch"
@@ -65,6 +66,18 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Calendar Overview"
+    },
+    "linux": {
+      "target": [
+        "AppImage"
+      ],
+      "icon": "icon.png"
+    },
+    "mac": {
+      "target": [
+        "dmg"
+      ],
+      "icon": "icon.png"
     }
   }
 }
