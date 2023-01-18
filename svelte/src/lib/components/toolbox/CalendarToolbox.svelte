@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { calendarEventsStore, calendarSettingsStore } from "$lib/store/stores";
+	import DarkThemeSwitch from "./DarkThemeSwitch.svelte";
 
 	import LockWindow from "./LockWindow.svelte";
 
@@ -39,7 +40,7 @@
 
   <div class="grow"/>
 
-
+  <DarkThemeSwitch/>
   <LockWindow/>
 
   <button class="" on:click={openCalendarSettings}>
