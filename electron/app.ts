@@ -1,4 +1,4 @@
-import { app, Menu, nativeImage, Tray } from "electron";
+import { app, ipcMain, Menu, nativeImage, Tray } from "electron";
 import ConfigureDev from "./configureDev";
 import WindowController, { WindowSettings } from "./windows/windowController";
 import { calendarSettingsStore } from "./stores/sharedStore";
@@ -10,7 +10,6 @@ const settingsWindowSettings:Partial<WindowSettings> = {
   width: 480,
   height: 800,
   page: "settings",
-  show: false,
 };
 
 const calendarWindowSettings:Partial<WindowSettings> = {
@@ -58,20 +57,7 @@ class App{
     }
 
     calendarSettingsStore.subscribe((state, previousState)=>{
-      const { showWindow, alwaysVisible } = state;
-
-      if(showWindow !== previousState?.showWindow){
-        if(showWindow){
-          if(this.settingsWindow?.isDestroyed()){
-            this.createSettingsWindow();
-          }
-          this.settingsWindow?.show();
-        }else{
-          if(!this.settingsWindow?.isDestroyed()){
-            this.settingsWindow?.hide();
-          }
-        }
-      }
+      const { alwaysVisible } = state;
 
       if(alwaysVisible !== previousState?.alwaysVisible){
         if(this.calendarWindow){
@@ -82,6 +68,10 @@ class App{
           }
         }
       }
+    });
+
+    ipcMain.on("show-settings", ()=>{
+      this.openSettings();
     });
 
     console.log("App started");
@@ -160,6 +150,7 @@ class App{
   openSettings(){
     this.createSettingsWindow();
     this.settingsWindow?.show();
+    this.settingsWindow?.window?.focus();
   }
 
   exit(){

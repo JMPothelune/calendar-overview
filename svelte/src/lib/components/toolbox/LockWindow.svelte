@@ -1,0 +1,23 @@
+<script lang="ts">
+	import { calendarSettingsStore } from "$lib/store/stores";
+
+  $: isLocked = $calendarSettingsStore.alwaysVisible;
+
+  function toogle(): void {
+    $calendarSettingsStore.alwaysVisible = !$calendarSettingsStore.alwaysVisible;
+  }
+</script>
+
+
+<!-- svelte-ignore a11y-click-events-have-key-events -->
+<button class="" on:click={toogle}>
+  {#if isLocked}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+      <path fill-rule="evenodd" d="M10 1a4.5 4.5 0 00-4.5 4.5V9H5a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-.5V5.5A4.5 4.5 0 0010 1zm3 8V5.5a3 3 0 10-6 0V9h6z" clip-rule="evenodd" />
+    </svg>
+  {:else}
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4">
+      <path fill-rule="evenodd" d="M14.5 1A4.5 4.5 0 0010 5.5V9H3a2 2 0 00-2 2v6a2 2 0 002 2h10a2 2 0 002-2v-6a2 2 0 00-2-2h-1.5V5.5a3 3 0 116 0v2.75a.75.75 0 001.5 0V5.5A4.5 4.5 0 0014.5 1z" clip-rule="evenodd" />
+    </svg>
+  {/if}
+</button>

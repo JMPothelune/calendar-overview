@@ -4,6 +4,7 @@
 	import { tick } from 'svelte';
 	import EventView from '$lib/components/EventView.svelte';
 	import { calendarEventsStore, calendarSettingsStore } from '$lib/store/stores';
+	import CalendarToolbox from '$lib/components/toolbox/CalendarToolbox.svelte';
 
   $:toogleDarkClass($calendarSettingsStore.isLightMode);
   
@@ -15,10 +16,9 @@
 </script>
 
 <main style="-webkit-app-region: drag" class="min-h-full select-none p-2">
-  <h1>Events</h1>
-  $calendarEventsStore : {JSON.stringify($calendarEventsStore)}
+  <CalendarToolbox/>
   <div class="flex flex-col space-y-2">
-    {#each $calendarEventsStore as event}
+    {#each $calendarEventsStore.events as event}
       <EventView event={event} />
     {/each}
   </div>

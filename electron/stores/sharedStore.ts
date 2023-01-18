@@ -1,14 +1,18 @@
 import { createSharedStore } from '../lib/sharedStoreMain';
 import { CalendarEvent } from '../models/calendarEvent';
 
-const calendarSettings = {
+
+const calendarSettingsStore = createSharedStore("calendarSettings", {
   isLightMode: false,
   showWindow: true,
   alwaysVisible: false,
-};
+})
 
-const calendarSettingsStore = createSharedStore("calendarSettings", calendarSettings);
-const calendarEventsStore = createSharedStore("calendarEvents", [] as CalendarEvent[]);
+const calendarEventsStore = createSharedStore("calendarEvents", {
+  lastUpdated: new Date(),
+  status: "idle" as "idle" | "updating" | "error",
+  events : [] as CalendarEvent[]
+});
   
 export {
   calendarSettingsStore,
