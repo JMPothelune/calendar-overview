@@ -23,3 +23,12 @@
     {/each}
   </div>
 </main>
+
+
+<style>
+
+  :global(button){
+    -webkit-app-region: no-drag;
+  }
+
+</style>
