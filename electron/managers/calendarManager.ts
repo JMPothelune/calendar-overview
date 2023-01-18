@@ -52,8 +52,8 @@ class CalendarManager{
   }
 
 
-  loadCalendar(source: CalendarSource): Promise<CalendarEvent[]> {
-    console.log("Loading calendar from url: ", source.icalUrl)
+  async loadCalendar(source: CalendarSource): Promise<CalendarEvent[]> {
+    if(!source.icalUrl) return [];
     return new Promise((resolve, reject) => {
       ical.fromURL(source.icalUrl, {}, (err, data) => {
         if (err) {
