@@ -96,18 +96,7 @@ class App{
     if(this.calendarWindow) return;
     console.log("Creating calendar window");
     this.calendarWindow = new WindowController(calendarWindowSettings, this.configDev);
-    this.calendarWindow.start().then((window)=>{
-      window.on("close", (e)=>{
-        e.preventDefault();
-        window.hide();
-        calendarSettingsStore.update((state)=>{
-          return {
-            ...state,
-            showWindow: false,
-          }
-        });
-      });
-    });
+    this.calendarWindow.start();
   }
 
   async closeCalendarWindow() {
@@ -140,10 +129,10 @@ class App{
     const tray = new Tray(trayIcon);
     tray.setToolTip("Calendar");
     tray.setContextMenu(Menu.buildFromTemplate([
+      {label: "Show", click: ()=>this.createCalendarWindow()},
       {label: "Settings", click: ()=>this.openSettings()},
       {label: "Exit", click: ()=>this.exit()},
     ]));
-    tray.on("click", ()=>this.openSettings());
   }
 
   openSettings(){
