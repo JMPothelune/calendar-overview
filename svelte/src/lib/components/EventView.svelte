@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { CalendarEvent } from "$lib/store/store";
+	import type { CalendarEvent } from '$lib/models/calendarEvent';
   import dayjs from 'dayjs'
   import duration from 'dayjs/plugin/duration'
   dayjs.extend(duration)

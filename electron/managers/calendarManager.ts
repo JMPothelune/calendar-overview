@@ -1,5 +1,5 @@
 import { getTodayEvents, loadCalendar } from "../services/calendarLoader";
-import sharedStore from "../store/sharedStore";
+import { calendarEventsStore } from "../stores/sharedStore";
 
 
 
@@ -12,7 +12,7 @@ class CalendarManager{
     setInterval(async () => {
       this.updateTodaysEvents();
     }
-    , 1000 * 60 * 5);
+    , 1000 * 60 );
 
     this.updateTodaysEvents();
   }
@@ -26,12 +26,7 @@ class CalendarManager{
 
       let todayEvents = getTodayEvents(events);
 
-      sharedStore.setState((state)=>{
-        return {
-          ...state,
-          calendarEvents: todayEvents
-        }
-      })
+      calendarEventsStore.set(todayEvents);
       return todayEvents;
     }
     catch(e){

@@ -1,29 +1,31 @@
 import { app, Menu, nativeImage, Tray } from "electron";
 import ConfigureDev from "./configureDev";
 import WindowController, { WindowSettings } from "./windows/windowController";
-import sharedStore from "./store/sharedStore";
+import { calendarSettingsStore } from "./stores/sharedStore";
 import path from "path";
 import CalendarManager from "./managers/calendarManager";
 
-const mainWindowSettings:Partial<WindowSettings> = {
+const settingsWindowSettings:Partial<WindowSettings> = {
   title: "Settings",
   width: 480,
   height: 800,
   page: "settings",
+  show: false,
 };
 
 const calendarWindowSettings:Partial<WindowSettings> = {
   title: "Calendar",
+  width: 400,
+  height: 600,
   maximise: true,
   page: "calendar",
-  show: false,
-  secondaryScreen: true,
+  show: true,
   frame: false,
 };
 
 class App{
   configDev: ConfigureDev;
-  mainWindow: WindowController | null = null;
+  settingsWindow: WindowController | null = null;
   calendarWindow: WindowController | null = null;
   calendarManager: CalendarManager;
   tray: Tray | null = null;
@@ -34,11 +36,9 @@ class App{
     this.calendarManager.start();
   }
 
-  start(){
-    
+  start(){    
     // Prevent multiple instances of the app
     const gotTheLock = app.requestSingleInstanceLock()
-
 
     if (!gotTheLock) {
       app.quit()
@@ -46,7 +46,7 @@ class App{
     } 
 
     app.on('second-instance', () => {
-      this.createMainWindow();
+      this.createCalendarWindow();
     })
 
     app.on("ready", ()=>this.onReady());
@@ -57,26 +57,29 @@ class App{
       Menu.setApplicationMenu(null)
     }
 
-    sharedStore.subscribe((state, description)=>{
-      console.log("State changed", description);
+    calendarSettingsStore.subscribe((state, previousState)=>{
+      const { showWindow, alwaysVisible } = state;
 
-      if(this.calendarWindow){
-
-        if(state.calendarSettings.showWindow){
-          if(this.calendarWindow?.isDestroyed()){
-            this.createCalendarWindow();
+      if(showWindow !== previousState?.showWindow){
+        if(showWindow){
+          if(this.settingsWindow?.isDestroyed()){
+            this.createSettingsWindow();
           }
-          this.calendarWindow.show();
+          this.settingsWindow?.show();
         }else{
-          if(!this.calendarWindow?.isDestroyed()){
-            this.calendarWindow.hide();
+          if(!this.settingsWindow?.isDestroyed()){
+            this.settingsWindow?.hide();
           }
         }
+      }
 
-        if(state.calendarSettings.alwaysVisible){
-          this.calendarWindow.setAlwaysOnTop(true);
-        }else{
-          this.calendarWindow.setAlwaysOnTop(false);
+      if(alwaysVisible !== previousState?.alwaysVisible){
+        if(this.calendarWindow){
+          if(alwaysVisible){
+            this.calendarWindow.setAlwaysOnTop(true);
+          }else{
+            this.calendarWindow.setAlwaysOnTop(false);
+          }
         }
       }
     });
@@ -85,17 +88,18 @@ class App{
   }
 
 
-  async createMainWindow() {
-    console.log("Creating main window");
+  async createSettingsWindow() {
+    console.log("Creating settings window");
 
-    if(this.mainWindow?.isDestroyed()){
-      this.mainWindow = null;
+    if(this.settingsWindow?.isDestroyed()){
+      this.settingsWindow = null;
     }
-    if(this.mainWindow) return;
-    this.mainWindow = new WindowController(mainWindowSettings, this.configDev);
-    this.mainWindow.start();
+    if(this.settingsWindow) return;
+    this.settingsWindow = new WindowController(settingsWindowSettings, this.configDev);
+    this.settingsWindow.start();
     this.createCalendarWindow();
   }
+
   async createCalendarWindow() {
     if(this.calendarWindow?.isDestroyed()){
       this.calendarWindow = null;
@@ -104,19 +108,15 @@ class App{
     console.log("Creating calendar window");
     this.calendarWindow = new WindowController(calendarWindowSettings, this.configDev);
     this.calendarWindow.start().then((window)=>{
-      console.log("Calendar window created");
       window.on("close", (e)=>{
-        console.log("Calendar window closed");
-        sharedStore.setState((state)=>{
+        e.preventDefault();
+        window.hide();
+        calendarSettingsStore.update((state)=>{
           return {
             ...state,
-            calendarSettings: {
-              ...state.calendarSettings,
-              showWindow: false,
-            }
+            showWindow: false,
           }
-        }
-        )
+        });
       });
     });
   }
@@ -131,25 +131,23 @@ class App{
 
   onWindowAllClosed() {
     console.log("All windows closed");
-    // if (process.platform !== "darwin") {
-    //   app.quit();
-    // }
   }
 
   onActivate() {
     console.log("App activated");
-    this.createMainWindow();
+    this.createCalendarWindow();
     
   }
 
   onReady() {
     console.log("App ready");
-    this.createMainWindow();
+    this.createCalendarWindow();
     this.createTray();
   }
 
   createTray(){
-    const trayIcon = nativeImage.createFromPath(path.join(__dirname, "..", "assets", "calendar.png"));
+    console.log("Creating tray");
+    const trayIcon = nativeImage.createFromPath(path.join(__dirname, "..", "assets", "cal.png"));
     const tray = new Tray(trayIcon);
     tray.setToolTip("Calendar");
     tray.setContextMenu(Menu.buildFromTemplate([
@@ -160,8 +158,8 @@ class App{
   }
 
   openSettings(){
-    this.createMainWindow();
-    this.mainWindow?.show();
+    this.createSettingsWindow();
+    this.settingsWindow?.show();
   }
 
   exit(){

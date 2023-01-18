@@ -1,0 +1,33 @@
+export type CalendarEvent = {
+  start: Date;
+  end: Date;
+  summary: string;
+  description: string;
+  location: string;
+  organizer: string;
+  uid: string;
+  sequence: number;
+  status: string;
+  url: string;
+  categories: string[];
+  created: Date;
+  lastModified: Date;
+  recurrenceId: Date;
+  productId: string;
+  attendees: string[];
+  alarms: string[];
+  comment: string;
+  requestStatus: string;
+  transparency: string;
+  busyStatus: string;
+  geo: string;
+  percentComplete: number;
+  priority: number;
+  resources: string[];
+  rrule: string;
+  tzid: string;
+  tzname: string;
+  tzoffsetfrom: string;
+  tzoffsetto: string;
+  tzurl: string;
+}
