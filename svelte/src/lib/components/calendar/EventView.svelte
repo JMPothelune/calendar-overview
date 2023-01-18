@@ -21,16 +21,16 @@
 
   let status = 'upcoming';
   $: {
-    if(now.getTime() < event.start.getTime()) {
+    if(now < event.start) {
       status = 'upcoming'
-    } else if(now.getTime() < event.end.getTime()) {
+    } else if(now < event.end) {
       status = 'ongoing'
     } else {
       status = 'finished'
     }
   }
   function formatDuration(duration: any) {
-    if(duration.asMilliseconds() < 0) {
+    if(status !== 'ongoing') {
       return ''
     }
     const hours = duration.hours()

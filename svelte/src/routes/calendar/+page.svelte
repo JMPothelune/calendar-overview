@@ -1,10 +1,9 @@
 <script lang="ts">
   import '@skeletonlabs/skeleton/themes/theme-crimson.css';
-  import { storePrefersDarkScheme, storeLightSwitch } from '@skeletonlabs/skeleton';
-	import { tick } from 'svelte';
-	import EventView from '$lib/components/EventView.svelte';
+	import EventView from '$lib/components/calendar/EventView.svelte';
 	import { calendarEventsStore, calendarSettingsStore } from '$lib/store/stores';
 	import CalendarToolbox from '$lib/components/toolbox/CalendarToolbox.svelte';
+	import DayView from '$lib/components/calendar/DayView.svelte';
 
   $:toogleDarkClass($calendarSettingsStore.isLightMode);
   
@@ -15,13 +14,10 @@
 
 </script>
 
-<main style="-webkit-app-region: drag" class="min-h-full select-none p-2">
+<main style="-webkit-app-region: drag" class="h-[100vh] select-none p-2 overflow-hidden">
   <CalendarToolbox/>
-  <div class="flex flex-col space-y-2">
-    {#each $calendarEventsStore.events as event}
-      <EventView event={event} />
-    {/each}
-  </div>
+  
+  <DayView/>
 </main>
 
 
