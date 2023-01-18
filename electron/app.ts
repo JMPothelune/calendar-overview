@@ -14,9 +14,8 @@ const settingsWindowSettings:Partial<WindowSettings> = {
 
 const calendarWindowSettings:Partial<WindowSettings> = {
   title: "Calendar",
-  width: 400,
-  height: 600,
-  maximise: true,
+  width: 300,
+  height: 400,
   page: "calendar",
   show: true,
   frame: false,

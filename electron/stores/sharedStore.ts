@@ -1,11 +1,10 @@
 import { createSharedStore } from '../lib/sharedStoreMain';
-import { CalendarEvent } from '../models/calendarEvent';
-
+import { CalendarEvent, CalendarSource } from '../models/CalendarModels';
 
 const calendarSettingsStore = createSharedStore("calendarSettings", {
   isLightMode: false,
-  showWindow: true,
   alwaysVisible: false,
+  sources: [] as CalendarSource[],
 })
 
 const calendarEventsStore = createSharedStore("calendarEvents", {

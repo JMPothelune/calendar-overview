@@ -79,9 +79,14 @@ export function createSharedStore<T>( storeName: string, initialState:T, options
       if (index !== -1) listeners.splice(index, 1);
     };
   }
+  
+  function merge(newPartialState: Partial<T>) {
+    const mergedState = { ...internalState, ...newPartialState };
+    set(mergedState);
+  }
     
 
 
 
-  return { set, update, getState, subscribe };
+  return { set, update, getState, subscribe, merge };
 }

@@ -1,10 +1,16 @@
 import type { CalendarEvent } from "$lib/models/calendarEvent";
 import { createSharedStore } from "./sharedStoresRenderer";
 
+interface CalendarSource {
+  name: string;
+  icalUrl: string;
+  color: string;
+}
+
 const calendarSettingsStore = createSharedStore("calendarSettings", {
   isLightMode: false,
-  showWindow: true,
   alwaysVisible: false,
+  sources: [] as CalendarSource[],
 })
 
 const calendarEventsStore = createSharedStore("calendarEvents", {

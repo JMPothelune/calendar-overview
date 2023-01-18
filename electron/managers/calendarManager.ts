@@ -1,6 +1,7 @@
 import { ipcMain } from "electron";
-import { getTodayEvents, loadCalendar } from "../services/calendarLoader";
-import { calendarEventsStore } from "../stores/sharedStore";
+import { CalendarEvent, CalendarSource } from "../models/CalendarModels";
+import { calendarEventsStore, calendarSettingsStore } from "../stores/sharedStore";
+import * as ical from 'node-ical';
 
 
 
@@ -12,8 +13,7 @@ class CalendarManager{
   start(){
     setInterval(async () => {
       this.updateTodaysEvents();
-    }
-    , 1000 * 60 );
+    }, 1000 * 60 );
 
     this.updateTodaysEvents();
 
@@ -23,34 +23,81 @@ class CalendarManager{
   }
     
   async updateTodaysEvents(){
-    calendarEventsStore.update( state => ({
-      ...state,
-      status: "updating"
-    }))
-    
-    const calendarUrl = "https://calendar.google.com/calendar/ical/c_976a6d6ff1a313dadeebaaac5948c04f9cbea113138c52ad2b13e72669a7cfc9%40group.calendar.google.com/private-4347244b240b6f786f2f28364b396366/basic.ics"
+    calendarEventsStore.merge({ status: "updating"})
+  
     try{
-
-      let events = await loadCalendar(calendarUrl)
-
-      let todayEvents = getTodayEvents(events);
+      let events = await this.getAllCalendarEvents();
+      let todayEvents = this.filterTodayEvents(events);
+      todayEvents = this.sortEvents(todayEvents);
 
       calendarEventsStore.set({
         events: todayEvents,
         lastUpdated: new Date(),
         status: "idle",
       })
-      return todayEvents;
     }
     catch(e){
-      calendarEventsStore.update( state => ({
-        ...state,
-        status: "error"
-      }))
-      console.error("ERROR:", e)
+      calendarEventsStore.merge({ status: "error" })
+      console.error("CalendarManager:", e)
     } 
-
   }
+
+  async getAllCalendarEvents(): Promise<CalendarEvent[]>{
+    let calendarEvents: CalendarEvent[] = [];
+    for(let calendar of calendarSettingsStore.getState().sources){
+      let events = await this.loadCalendar(calendar);
+      calendarEvents = [...calendarEvents, ...events]
+    }
+    return calendarEvents;
+  }
+
+
+  loadCalendar(source: CalendarSource): Promise<CalendarEvent[]> {
+    console.log("Loading calendar from url: ", source.icalUrl)
+    return new Promise((resolve, reject) => {
+      ical.fromURL(source.icalUrl, {}, (err, data) => {
+        if (err) {
+          reject(err);
+        } else {
+          let events: CalendarEvent[] = [];
+          for (let key in data) {
+            if (data.hasOwnProperty(key)) {
+              let event = data[key];
+              if(event.type === 'VEVENT'){
+                events.push({
+                  ...event,
+                  calendar: source,
+                } as CalendarEvent);
+              }
+            }
+          }
+          resolve(events);
+        }
+      });
+    });
+  }
+  
+  filterTodayEvents(events: CalendarEvent[]): CalendarEvent[] {
+    let today = new Date();
+    let todayEvents: CalendarEvent[] = [];
+    todayEvents = events.filter((event) => {
+      if (event.start) {
+      // check if the start date is today
+      return event.start.getDate() === today.getDate()
+          && event.start.getMonth() === today.getMonth()
+          && event.start.getFullYear() === today.getFullYear();
+  }
+    });
+    return todayEvents;
+  }
+  
+  
+  sortEvents(events: CalendarEvent[]): CalendarEvent[] {
+    return events.sort(function(a, b) {
+      return a.start.getTime() - b.start.getTime();
+    });
+  }
+
 }
 
 
