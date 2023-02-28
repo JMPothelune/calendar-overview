@@ -16,7 +16,7 @@ const devMode = {
   watchSvelteBuild: false, // true when you want to watch build svelte
 };
 
-const developerOptions = process.env.NODE_ENV === "production" ? buildMode : devMode;
+const developerOptions = buildMode
 
 app.commandLine.appendSwitch("enable-experimental-web-platform-features");
 

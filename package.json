@@ -4,7 +4,7 @@
   "description": "An overview of your calendars",
   "author": "jm@ponymakers.com",
   "license": "MIT",
-  "version": "0.3.0",
+  "version": "0.3.2",
   "main": "dist/index.js",
   "scripts": {
     "nodemon": "nodemon",

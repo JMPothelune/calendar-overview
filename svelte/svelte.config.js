@@ -12,6 +12,7 @@ const config = {
 		adapter: adapter({
 			pages: "../dist/www",
 			assets: "../dist/www",
+			trailingSlash: 'always',
 		}),
 
 	}
