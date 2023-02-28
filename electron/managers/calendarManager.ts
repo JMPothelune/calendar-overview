@@ -20,6 +20,24 @@ class CalendarManager{
     ipcMain.on("refresh-calendar", async (event, arg) => {
       this.updateTodaysEvents();
     });
+
+    ipcMain.on("gadd-timer", async (event, arg) => {});
+      this.addTimer();
+  }
+
+  async addTimer(){
+    // get today's events from the store
+    let todayEvents = calendarEventsStore.getState().events;
+
+
+    // create an event in the calendar starting now and ending in 30 minutes and add it to the store
+    let event = {
+      start: new Date(),
+      end: new Date(new Date().getTime() + 30 * 60000),
+      summary: "Test Event"
+    } as CalendarEvent;
+    todayEvents.push(event);
+    
   }
     
   async updateTodaysEvents(){

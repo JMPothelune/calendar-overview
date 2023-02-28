@@ -12,6 +12,10 @@
     window.ipcRenderer.send("refresh-calendar");
   }
 
+  async function addTimer() {
+    window.ipcRenderer.send("add-timer");
+  }
+
   $: isUpating = $calendarEventsStore.status == "updating";
   
 
@@ -36,7 +40,7 @@
     </svg>
   </button>
 
-  
+  <button on:click={addTimer} >+</button>
 
   <div class="grow"/>
 

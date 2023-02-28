@@ -16,7 +16,6 @@
 
 <main style="-webkit-app-region: drag" class="h-[100vh] select-none p-2 overflow-hidden">
   <CalendarToolbox/>
-  
   <DayView/>
 </main>
 

@@ -61,9 +61,9 @@ class ConfigureDev {
 
         if (this.isLocalHost()) {
             try {
-              await window.loadURL("http://localhost:5173/" + page);
+              await window.loadURL("http://localhost:5174/" + page);
             } catch (error) {
-              console.log(`ERROR: window.loadURL("http://localhost:5173/");`);
+              console.log(`ERROR: window.loadURL("http://localhost:5174/");`);
               console.log(error);
             }
           } else if (this.isElectronServe()) {

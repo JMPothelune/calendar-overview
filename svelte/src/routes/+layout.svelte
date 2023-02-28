@@ -4,7 +4,6 @@
 </script>
 
 <Modal />
-
 <AppShell class="min-h-screen">
 	<slot />
 </AppShell>
